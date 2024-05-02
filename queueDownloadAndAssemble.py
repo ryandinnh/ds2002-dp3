@@ -29,8 +29,6 @@ def getMessages():
             response = sqs.receive_message( #request syntax: https://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_ReceiveMessage.html
                 QueueUrl=url,
                 AttributeNames=['All'],
-
-                
                 MaxNumberOfMessages=10,  #10 total messages instructions said not run a single call 10x (so no for loop)
                 MessageAttributeNames=['All'],
                 VisibilityTimeout=300 #The duration (in seconds) that the received messages are hidden from subsequent retrieve requests after being retrieved by a ReceiveMessage request.
@@ -44,9 +42,9 @@ def getMessages():
                 handle = msg['ReceiptHandle'] #just for tracking can comment out later
 
                 #print each message's details as they are downloaded (comment out later too)
-                print(f"Order: {order}")
-                print(f"Word: {word}")
-                print(f"Handle: {handle}")
+                #print(f"Order: {order}")
+                #print(f"Word: {word}")
+                #print(f"Handle: {handle}")
 
                 messages.append({"order": order, "word": word, "handle": handle}) #dictionary of the message values
         except ClientError as e: #error exception handler
@@ -67,8 +65,8 @@ def main():
     if messages:
         sentence = putTogether(messages)
         print("Final sentence:", sentence)
-        #for msg in messages:
-            #delete_message(msg['handle'])
+        for msg in messages:
+            delete_message(msg['handle']) #use handle as an id to delete the messages
 
 if __name__ == "__main__":
     main()
